@@ -1,10 +1,7 @@
 import arcade
 import random
 
-SPRITE_SCALING = 1
-OBSTACLE_SCALING = 0.7
-
-SCREEN_WIDTH = 800
+SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Better Move Sprite with Keyboard Example"
 
@@ -24,6 +21,18 @@ class Player(arcade.Sprite):
             self.top = SCREEN_HEIGHT - 10
             # self.center_y = 570
 
+    def update_animation(self, delta_time: float = 1/60):
+
+        self.height += 1
+        self.width += 1
+
+    def update_animation_small(self):
+        if self.height > 48 and self.width > 48:
+            self.height -= 1
+            self.width -= 1
+
+
+
 
 # starts on the left
 class ObstacleLeft(arcade.Sprite):
@@ -38,6 +47,12 @@ class ObstacleRight(arcade.Sprite):
 
     def update(self):
         self.center_x -= self.change_x
+
+
+class Bonus(arcade.Sprite):
+
+    def update(self):
+        self.center_x += self.change_x
 
 
 class DDXL(arcade.Window):
@@ -56,11 +71,15 @@ class DDXL(arcade.Window):
         # Variables that will hold sprite lists
         self.player_list = None
         self.obstacle_list = None
+        self.bonus_list = None
+        self.shapes_list = None
+
+        self.background = None
 
         self.health = None
         self.score = None
 
-        self.shapes_list = None
+        self.scaling = None
 
         self.time_obstacle = 0
 
@@ -84,9 +103,13 @@ class DDXL(arcade.Window):
 
     def setup(self):
         """ Set up the game and initialize the variables. """
+        self.scaling = 1.2
+
         self.shapes_list = ["C:/Users/yboy2/OneDrive/Desktop/weirdBox.png",
                             "C:/Users/yboy2/OneDrive/Desktop/weirdRectangle.png",
                             "C:/Users/yboy2/OneDrive/Desktop/weirdRectangle2.png"]
+
+        self.background = arcade.load_texture("C:/Users/yboy2/OneDrive/Desktop/background.png")
 
         self.health = 3
         self.score = 0
@@ -96,7 +119,7 @@ class DDXL(arcade.Window):
         self.obstacle_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = Player("C:/Users/yboy2/OneDrive/Desktop/ball.png", 1.2)
+        self.player_sprite = Player("C:/Users/yboy2/OneDrive/Desktop/ball.png", self.scaling)
         self.player_sprite.center_x = SCREEN_WIDTH/2
         self.player_sprite.center_y = SCREEN_HEIGHT - 30
 
@@ -120,8 +143,12 @@ class DDXL(arcade.Window):
         # This command has to happen before we start drawing
         arcade.start_render()
 
+        arcade.draw_lrwh_rectangle_textured(0, 0,
+                                            SCREEN_WIDTH, SCREEN_HEIGHT,
+                                            self.background)
+
         output = str(self.score)
-        arcade.draw_text(output, 300, 200, arcade.color.AMETHYST, 200, 200, 'center', 'Calibri')
+        arcade.draw_text(output, 450, 200, arcade.color.AMETHYST, 200, 300, 'center', 'Calibri')
 
         # Draw all the sprites.
         self.player_list.draw()
@@ -143,9 +170,14 @@ class DDXL(arcade.Window):
         if self.player_sprite.bottom < 15:
             self.at_bottom = True
             self.at_top = False
+            print(self.time_obstacle)
+            if self.time_obstacle % 6 == 0:
+                self.player_list.update_animation()
         if self.player_sprite.top > SCREEN_HEIGHT - 15:
             self.at_top = True
             self.at_bottom = False
+            if self.time_obstacle % 6 == 0:
+                self.player_list.update_animation()
 
         if self.time_obstacle % 100 == 0:
             self.new_obstacle_sprite_left = ObstacleLeft(self.shapes_list[random.randint(0, 2)], 0.1)
