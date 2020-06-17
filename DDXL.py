@@ -25,12 +25,14 @@ class Player(arcade.Sprite):
         self.height += 1
         self.width += 1
 
-    def update_animation_smaller(self, getSmaller):
-        if getSmaller == 0 and (self.height > 48 and self.width > 48):
+    def update_animation_smaller(self):
+        if self.height > 48 and self.width > 48:
             self.height -= 2
             self.width -= 2
-        if (self.height == 48):
+        if self.height <= 48 and self.width <= 48:
             return 1
+        else:
+            return 0
 
 
 # starts on the left
@@ -172,10 +174,20 @@ class DDXL(arcade.Window):
         if self.player_sprite.bottom < 15:
             self.at_bottom = True
             self.at_top = False
+            if self.time_obstacle % 4 == 0:
+                if self.player_sprite.height > 48 and self.first_time == 0:
+                    self.first_time = self.player_sprite.update_animation_smaller()
+                else:
+                    self.player_sprite.update_animation()
 
         if self.player_sprite.top > SCREEN_HEIGHT - 15:
             self.at_top = True
             self.at_bottom = False
+            if self.time_obstacle % 4 == 0:
+                if self.player_sprite.height > 48 and self.first_time == 0:
+                    self.first_time = self.player_sprite.update_animation_smaller()
+                else:
+                    self.player_sprite.update_animation()
 
         if self.time_obstacle % 100 == 0:
             self.new_obstacle_sprite_left = ObstacleLeft(self.shapes_list[random.randint(0, 2)], 0.1)
@@ -211,11 +223,11 @@ class DDXL(arcade.Window):
                 if self.space_pressed == 0:
                     self.space_pressed = 1
                     self.score += 1
-                    self.first_time = 1
+                    self.first_time = 0
                 else:
                     self.space_pressed = 0
                     self.score += 1
-                    self.first_time = 1
+                    self.first_time = 0
 
 
 def main():
