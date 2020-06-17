@@ -231,11 +231,6 @@ class DDXL(arcade.View):
             self.health -= 1
             obstacle.remove_from_sprite_lists()
 
-        if self.health <= 0:
-            game_over_view = GameOverView()
-            self.window.set_mouse_visible(True)
-            self.window.show_view(game_over_view)
-
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
         if self.at_bottom or self.at_top:
@@ -248,28 +243,6 @@ class DDXL(arcade.View):
                     self.space_pressed = 0
                     self.score += 1
                     self.first_time = 0
-
-
-class GameOverView(arcade.View):
-    def __init__(self):
-        super().__init__()
-        self.time_taken = 0
-
-    def on_show(self):
-        arcade.set_background_color(arcade.color.BLACK)
-
-    def on_draw(self):
-        arcade.start_render()
-        """
-        Draw "Game over" across the screen.
-        """
-        arcade.draw_text("Game Over", 240, 400, arcade.color.WHITE, 54)
-        arcade.draw_text("Click to restart", 310, 300, arcade.color.WHITE, 24)
-
-
-    def on_mouse_press(self, _x, _y, _button, _modifiers):
-        game_view = DDXL(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-        self.window.show_view(game_view)
 
 
 def main():
