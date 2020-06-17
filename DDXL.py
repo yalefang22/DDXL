@@ -171,13 +171,13 @@ class DDXL(arcade.Window):
             self.at_bottom = True
             self.at_top = False
             print(self.time_obstacle)
-            if self.time_obstacle % 6 == 0:
-                self.player_list.update_animation()
+#            if self.time_obstacle % 6 == 0:
+#                self.player_list.update_animation()
         if self.player_sprite.top > SCREEN_HEIGHT - 15:
             self.at_top = True
             self.at_bottom = False
-            if self.time_obstacle % 6 == 0:
-                self.player_list.update_animation()
+#            if self.time_obstacle % 6 == 0:
+#                self.player_list.update_animation()
 
         if self.time_obstacle % 100 == 0:
             self.new_obstacle_sprite_left = ObstacleLeft(self.shapes_list[random.randint(0, 2)], 0.1)
